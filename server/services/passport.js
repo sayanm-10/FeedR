@@ -5,6 +5,19 @@ const mongoose = require("mongoose");
 
 const User = mongoose.model("users");
 
+passport.serializeUser((user, done) => {
+    // This id is not the Google ID,
+    // It is the identifier for this record
+    done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+    User.findById(id).then(user => {
+        // first argument of done is the error object
+        done(null, user);
+    });
+});
+
 // Passport should use a new instance of Google Strategy
 passport.use(
     new GoogleStrategy(
@@ -14,7 +27,17 @@ passport.use(
             callbackURL: '/auth/google/callback'
         },
         (accessToken, refreshToken, profile, done) => {
-            new User({ googleId: profile.id }).save();
+            User.findOne({ googleId: profile.id })
+                .then(existingUser => {
+                    if (existingUser) {
+                        //such an user already exists
+                        done(null, existingUser);
+                    } else {
+                        // such an user doesn't exist
+                        new User({ googleId: profile.id }).save()
+                            .then(user => done(null, user));
+                    }
+                });
         }
     )
 );
