@@ -13,6 +13,12 @@ module.exports = app => {
     app.get('/api/current_user', (req, res) => {
         // req object here contains the cookie
         res.send(req.user);
-    })
+    });
+
+    app.get('/api/logout', (req, res) => {
+        // passport attaches the logout method to req object
+        req.logout();
+        res.send(req.user);
+    });
 };
 
