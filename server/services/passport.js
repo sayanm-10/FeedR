@@ -11,11 +11,11 @@ passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-    User.findById(id).then(user => {
-        // first argument of done is the error object
-        done(null, user);
-    });
+passport.deserializeUser(async (id, done) => {
+    const user = await User.findById(id);
+
+    // first argument of done is the error object
+    done(null, user);
 });
 
 // Passport should use a new instance of Google Strategy
@@ -27,18 +27,17 @@ passport.use(
             callbackURL: '/auth/google/callback',
             proxy: true // trust proxies
         },
-        (accessToken, refreshToken, profile, done) => {
-            User.findOne({ googleId: profile.id })
-                .then(existingUser => {
-                    if (existingUser) {
-                        //such an user already exists
-                        done(null, existingUser);
-                    } else {
-                        // such an user doesn't exist
-                        new User({ googleId: profile.id }).save()
-                            .then(user => done(null, user));
-                    }
-                });
+        async (accessToken, refreshToken, profile, done) => {
+            const existingUser = await User.findOne({ googleId: profile.id });
+
+            //such an user already exists
+            if (existingUser) {
+                done(null, existingUser);
+            }
+
+            // such an user doesn't exist
+            const user = new User({ googleId: profile.id }).save();
+            done(null, user);
         }
     )
 );

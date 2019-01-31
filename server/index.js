@@ -31,9 +31,9 @@ authRoutes(app);
 
 // catch all unused routes
 // [MUST BE AFTER ALL ROUTES]
-app.get('*', (req, res) => {
-    res.send({error: '404'});
-});
+// app.get('*', (req, res) => {
+//     res.send({error: '404'});
+// });
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);
