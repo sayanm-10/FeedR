@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
+import {Link} from "react-router-dom";
 import {connect} from "react-redux";
+
+import Payment from "./Payment";
 
 class Header extends Component {
     renderLogin() {
@@ -9,18 +12,21 @@ class Header extends Component {
             case false:
                 return (<li><a href="/auth/google">Login with Google</a></li>);
             default:
-                return (<li><a href="/api/logout">Logout</a></li>);
+                return (<>
+                        <li><Payment /></li>
+                        <li><a href="/api/logout">Logout</a></li>
+                    </>
+                );
         }
     };
 
     render() {
-        console.log(this.props);
         return (
             <nav>
                 <div className="nav-_wrapper">
-                    <a className="left brand-logo">
+                    <Link className="left brand-logo" to={this.props.auth ? "/surveys" : "/"}>
                         Feedr
-                    </a>
+                    </Link>
                     <ul className="right">
                         {this.renderLogin()}
                     </ul>
