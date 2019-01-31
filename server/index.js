@@ -1,18 +1,21 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cookieSession = require("cookie-session");
 const passport = require("passport");
+const bodyParser = require("body-parser");
+const cookieSession = require("cookie-session");
 
 const keys = require("./config/keys");
 require("./models/User");
 require('./services/passport');
 const authRoutes = require("./routes/authRoutes");
-
+const billingRoutes = require("./routes/billingRoutes");
 
 // specify MongoDB connection
 mongoose.connect(keys.MONGO_URI);
 
 const app = express();
+
+app.use(bodyParser.json());
 
 // use cookie based authentication with passport
 app.use(
@@ -27,6 +30,7 @@ app.use(passport.session());
 
 // use passport as auth middleware
 authRoutes(app);
+billingRoutes(app);
 
 
 // catch all unused routes
