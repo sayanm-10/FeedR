@@ -8,7 +8,12 @@ module.exports = app => {
         })
     );
 
-    app.get('/auth/google/callback', passport.authenticate('google'));
+    app.get('/auth/google/callback',
+        passport.authenticate('google'),
+        (req, res) => {
+            res.redirect('/surveys');
+        }
+    );
 
     app.get('/api/current_user', (req, res) => {
         // req object here contains the cookie
@@ -18,7 +23,7 @@ module.exports = app => {
     app.get('/api/logout', (req, res) => {
         // passport attaches the logout method to req object
         req.logout();
-        res.send(req.user);
+        res.redirect("/");
     });
 };
 
