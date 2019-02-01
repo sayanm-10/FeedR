@@ -32,12 +32,22 @@ app.use(passport.session());
 authRoutes(app);
 billingRoutes(app);
 
+if (process.env.NODE_ENV === "production") {
+    // serve production assets like main.js, css
+    app.use(express.static("client/build"));
 
-// catch all unused routes
+    // serve index.html if route is not recognized
+    const path = require("path");
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+    });
+}
+
+// catch all unused routes in dev
 // [MUST BE AFTER ALL ROUTES]
-// app.get('*', (req, res) => {
-//     res.send({error: '404'});
-// });
+app.get('*', (req, res) => {
+    res.status(404).send({error: 'Page not found!'});
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);
