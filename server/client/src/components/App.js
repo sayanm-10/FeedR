@@ -5,6 +5,8 @@ import {fetchUser} from "../actions";
 
 import Header from "./Header";
 import Landing from "./Landing";
+import Dashboard from "./Dashboard";
+import NewSurvey from "./forms/NewSurvey";
 
 class App extends Component {
     componentDidMount() {
@@ -18,6 +20,8 @@ class App extends Component {
                     <div>
                         <Header />
                         <Route exact path="/" component={Landing} />
+                        <Route exact path="/surveys" component={Dashboard} />
+                        <Route exact path="/surveys/new" component={NewSurvey} />
                     </div>
                 </BrowserRouter>
 
