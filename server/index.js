@@ -11,6 +11,7 @@ require('./services/passport');
 
 const authRoutes = require("./routes/authRoutes");
 const billingRoutes = require("./routes/billingRoutes");
+const surveyRoutes = require("./routes/surveyRoutes");
 
 // specify MongoDB connection
 mongoose.connect(keys.MONGO_URI);
@@ -33,6 +34,7 @@ app.use(passport.session());
 // use passport as auth middleware
 authRoutes(app);
 billingRoutes(app);
+surveyRoutes(app);
 
 if (process.env.NODE_ENV === "production") {
     // serve production assets like main.js, css
