@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Link } from "react-router-dom";
 import { reduxForm, Field } from "redux-form";
 import SurveyField from "./SurveyField";
+import validateEmails from "../../utils/validateEmails";
 
 const FIELDS = [
     {name: "title", label: "Survey Title"},
@@ -36,6 +37,28 @@ class SurveyForm extends Component {
     }
 }
 
+const validateForm = values => {
+    const errors = {};
+
+    const invalidEmails = validateEmails(values.recipients || '');
+
+    if (invalidEmails && invalidEmails.length) {
+
+        errors.recipients = invalidEmails.includes("") ?
+                            "Recipient list contains extra commas"
+                            : `These emails are invalid: ${invalidEmails}`;
+    }
+
+    FIELDS.forEach(({name, label}) => {
+       if (!values[name]) {
+           errors[name] = `${label} is required.`
+       }
+    });
+
+    return errors;
+};
+
 export default reduxForm({
+    validate: validateForm,
     form: 'surveyForm'
 })(SurveyForm);
